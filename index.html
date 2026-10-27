@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pocket Arena</title>
+  <meta name="description" content="Blind battles between open-weight LLMs, running 100% in your browser on WebGPU.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <h1>⚔️ Pocket Arena</h1>
+    <p class="tag">Blind battles between open-weight LLMs, running <strong>100% in your browser</strong> on WebGPU.
+      No server, no API keys, no data leaves your machine.</p>
+  </header>
+
+  <div id="gpu-warning" class="banner" hidden></div>
+
+  <main>
+    <section class="card setup">
+      <div class="pickers">
+        <label>Contender 1<select id="pick-1"></select></label>
+        <span class="vs">vs</span>
+        <label>Contender 2<select id="pick-2"></select></label>
+      </div>
+      <label class="toggle"><input type="checkbox" id="blind" checked>
+        Blind mode: shuffle sides and hide names until you vote</label>
+    </section>
+
+    <section class="card">
+      <textarea id="prompt" rows="3" placeholder="Ask both models anything… (Ctrl+Enter to battle)"></textarea>
+      <div class="row">
+        <div class="chips" id="chips"></div>
+        <div class="actions">
+          <button id="stop" hidden>Stop</button>
+          <button id="send" class="primary">Battle ⚔️</button>
+        </div>
+      </div>
+      <p class="status" id="status"></p>
+    </section>
+
+    <section class="arena">
+      <article class="side" id="side-a">
+        <header><h2 class="name">Model A</h2><span class="stats"></span></header>
+        <div class="progress" hidden><div class="bar"></div><span class="ptext"></span></div>
+        <div class="output"><span class="placeholder">Waiting for a prompt…</span></div>
+      </article>
+      <article class="side" id="side-b">
+        <header><h2 class="name">Model B</h2><span class="stats"></span></header>
+        <div class="progress" hidden><div class="bar"></div><span class="ptext"></span></div>
+        <div class="output"><span class="placeholder">Waiting for a prompt…</span></div>
+      </article>
+    </section>
+
+    <section class="card vote" id="vote" hidden>
+      <h3>Which answer is better?</h3>
+      <div class="vote-buttons">
+        <button data-vote="a">👈 A is better</button>
+        <button data-vote="tie">🤝 Tie</button>
+        <button data-vote="bad">👎 Both bad</button>
+        <button data-vote="b">B is better 👉</button>
+      </div>
+      <p id="reveal" class="reveal" hidden></p>
+    </section>
+
+    <section class="card board">
+      <header>
+        <h2>Leaderboard</h2>
+        <div class="board-actions">
+          <button id="export">Export votes</button>
+          <label class="button">Import votes<input type="file" id="import" accept="application/json" hidden></label>
+          <button id="reset" class="danger">Reset</button>
+        </div>
+      </header>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Model</th><th>Elo</th><th>W / L / T</th><th>Win %</th><th>Avg tok/s</th></tr></thead>
+          <tbody id="board"></tbody>
+        </table>
+      </div>
+      <p class="muted" id="board-meta"></p>
+    </section>
+  </main>
+
+  <footer>
+    Inference by <a href="https://github.com/mlc-ai/web-llm">WebLLM</a> (Apache-2.0). The first battle downloads weights
+    (~0.3–2.5 GB per model), which your browser then caches. Votes are stored in your browser only, so export them to pool results with friends.
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
